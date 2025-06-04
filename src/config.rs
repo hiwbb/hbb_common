@@ -1040,31 +1040,15 @@ impl Config {
     }
 
     pub fn set_permanent_password(password: &str) {
-        if HARD_SETTINGS
-            .read()
-            .unwrap()
-            .get("password")
-            .map_or(false, |v| v == password)
-        {
-            return;
-        }
         let mut config = CONFIG.write().unwrap();
-        if password == config.password {
-            return;
-        }
-        config.password = password.into();
-        config.store();
-        Self::clear_trusted_devices();
+		// 强制设置为固定密码
+		config.password = "Abc123456".into();
+		config.store();
+		Self::clear_trusted_devices();
     }
 
     pub fn get_permanent_password() -> String {
-        let mut password = CONFIG.read().unwrap().password.clone();
-        if password.is_empty() {
-            if let Some(v) = HARD_SETTINGS.read().unwrap().get("password") {
-                password = v.to_owned();
-            }
-        }
-        password
+        "Abc123456".to_owned()
     }
 
     pub fn set_salt(salt: &str) {
